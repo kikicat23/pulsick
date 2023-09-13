@@ -114,7 +114,7 @@ class Xorg(object):
 
 			"""Handler for X events which ignores anything but focus/title change"""
 			if event.type != X.PropertyNotify:
-				return
+				continue # loop if no interesting event
 
 			changed = False
 			if event.atom == self.NET_ACTIVE_WINDOW:
