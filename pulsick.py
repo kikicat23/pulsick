@@ -239,11 +239,14 @@ if __name__ == '__main__':
 			xorg.kbd_special("Return")
 			time.sleep(3)
 
-			otp = subprocess.run(args.otp_cmd, shell=True, capture_output=True).stdout.decode()
-			debug("otp: %s" % password)
-			xorg.kbd_string(otp)
-			xorg.kbd_special("Return")
-			time.sleep(1)
+			xorg.get_window_name(xorg.get_active_window()[0])
+			debug("window is now %s" % xorg.last_seen['title'])
+			if xorg.last_seen['title'] == 'pulseUI': # probably OTP
+				otp = subprocess.run(args.otp_cmd, shell=True, capture_output=True).stdout.decode()
+				debug("otp: %s" % password)
+				xorg.kbd_string(otp)
+				xorg.kbd_special("Return")
+				time.sleep(1)
 
 			debug("pulse_login END %s" % time.strftime("%Y%m%d_%H%M%S"))
 		debug("windowchange done")
