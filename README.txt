@@ -8,6 +8,8 @@ The Ivanti / Pulse Secure client should be started (in an vncserver instance for
 The following will automate server re-login requests, getting password and OTP through pass[1] and pass-otp[2]:
 DISPLAY=:1.0 ./pulsick.py -v myuser "pass vpn-password" "pass otp vpn-otp"
 
+If the server implements pre-auth notification, use -p.
+
 [1] https://www.passwordstore.org/
 [2] https://github.com/tadfisher/pass-otp
 

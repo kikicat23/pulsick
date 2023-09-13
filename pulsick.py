@@ -99,9 +99,12 @@ class Xorg(object):
 		for c in s:
 			self.kbd_letter(c)
 
-	def kbd_special(self, c):
+	def kbd_special(self, c, letter=None):
 		debug("kbd_special: %s" % c)
 		fake_input(self.disp, X.KeyPress, self.keycode(c))
+		if letter:
+			debug("kbd_special: insert letter %s" % letter)
+			self.kbd_letter(letter)
 		fake_input(self.disp, X.KeyRelease, self.keycode(c))
 		self.disp.sync()
 
@@ -211,6 +214,7 @@ class Xorg(object):
 
 if __name__ == '__main__':
 	parser = argparse.ArgumentParser(description="automate Ivanti / Pulse Secure log-in on Linux")
+	parser.add_argument('-p', '--preauth-notif', action='store_true', help="confirm the pre-auth notification")
 	parser.add_argument('-v', '--verbose', action='store_const', dest="loglevel", const=logging.DEBUG, default=logging.INFO)
 	parser.add_argument('login', help='Login')
 	parser.add_argument('password_cmd', help='Command to execute to get password')
@@ -225,9 +229,13 @@ if __name__ == '__main__':
 		info("windowchange: %s" % win)
 		if win['title'] == 'Pulse Secure': # main UI
 			pass
-		elif win['title'] == 'pulseUI': # probably log-in prompt
+		elif win['title'] == 'pulseUI': # probably log-in prompt or notification
 			debug("pulse_login BEGIN %s" % time.strftime("%Y%m%d_%H%M%S"))
 			time.sleep(3)
+
+			if args.preauth_notif:
+				xorg.kbd_special("Alt_L", "p")
+				time.sleep(1)
 
 			xorg.kbd_string(args.login)
 			xorg.kbd_special("Tab")
